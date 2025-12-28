@@ -283,8 +283,16 @@
 
         // Connect to WebSocket server
         function connect() {
-            const wsUrl = 'ws://{{ config('sockeon.host') === '0.0.0.0' ? 'localhost' : config('sockeon.host') }}:{{ config('sockeon.port') }}';
+            // Determine WebSocket URL based on environment
+            @if(config('app.env') === 'production')
+                // Production: Use WSS through Nginx proxy
+                const wsUrl = 'wss://sockeon.pregnazone.com/sockeon';
+            @else
+                // Development: Direct connection to local WebSocket server
+                const wsUrl = 'ws://{{ config('sockeon.host') === '0.0.0.0' ? 'localhost' : config('sockeon.host') }}:{{ config('sockeon.port') }}';
+            @endif
             
+            console.log('Connecting to:', wsUrl);
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
