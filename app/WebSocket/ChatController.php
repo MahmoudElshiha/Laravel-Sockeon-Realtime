@@ -6,6 +6,10 @@ use Sockeon\Sockeon\Controllers\SocketController;
 use Sockeon\Sockeon\WebSocket\Attributes\OnConnect;
 use Sockeon\Sockeon\WebSocket\Attributes\OnDisconnect;
 use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
+use Sockeon\Sockeon\Http\Attributes\HttpRoute;
+use Sockeon\Sockeon\Http\Request;
+use Sockeon\Sockeon\Http\Response;
+
 
 class ChatController extends SocketController
 {
@@ -63,4 +67,16 @@ class ChatController extends SocketController
             'typing' => $isTyping
         ]);
     }
+
+    #[HttpRoute('GET', '/api/status')]
+    public function getStatus(Request $request): Response
+    {
+        return Response::json([
+            'status' => 'online',
+            'clients' => $this->getClientCount(),
+            'timestamp' => time()
+        ]);
+    }
+
+
 }
