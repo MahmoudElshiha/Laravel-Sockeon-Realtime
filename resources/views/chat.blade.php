@@ -281,14 +281,10 @@
         const statusText = document.getElementById('statusText');
         const typingIndicator = document.getElementById('typingIndicator');
 
-        // Connect to WebSocket server
         function connect() {
-            // Determine WebSocket URL based on environment
             @if(config('app.env') === 'production')
-                // Production: Use WSS through Nginx proxy
                 const wsUrl = 'wss://sockeon.pregnazone.com/sockeon';
             @else
-                // Development: Direct connection to local WebSocket server
                 const wsUrl = 'ws://{{ config('sockeon.host') === '0.0.0.0' ? 'localhost' : config('sockeon.host') }}:{{ config('sockeon.port') }}';
             @endif
             
@@ -308,7 +304,6 @@
                 messageInput.disabled = true;
                 sendButton.disabled = true;
                 
-                // Attempt to reconnect after 3 seconds
                 setTimeout(connect, 3000);
             };
 

@@ -19,6 +19,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Log File
+    |--------------------------------------------------------------------------
+    |
+    | Specify the log file path for Sockeon WebSocket server logs.
+    | If null, logs will be written to the default Laravel log file.
+    |
+    */
+
+    'log_file' => env('SOCKEON_LOG_FILE', storage_path('logs/sockeon-websocket.log')),
+
+    /*
+    |--------------------------------------------------------------------------
     | WebSocket Controllers
     |--------------------------------------------------------------------------
     |

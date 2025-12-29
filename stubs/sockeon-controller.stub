@@ -1,0 +1,47 @@
+<?php
+
+namespace {{ namespace }};
+
+use Sockeon\Sockeon\Controllers\SocketController;
+use Sockeon\Sockeon\WebSocket\Attributes\OnConnect;
+use Sockeon\Sockeon\WebSocket\Attributes\OnDisconnect;
+use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
+
+class {{ class }} extends SocketController
+{
+    /**
+     * Handle client connection.
+     */
+    #[OnConnect]
+    public function onConnect(int $clientId): void
+    {
+        echo "Client {$clientId} connected\n";
+        
+        $this->emit($clientId, 'welcome', [
+            'message' => 'Welcome to the server!',
+            'clientId' => $clientId
+        ]);
+    }
+
+    /**
+     * Handle client disconnection.
+     */
+    #[OnDisconnect]
+    public function onDisconnect(int $clientId): void
+    {
+        echo "Client {$clientId} disconnected\n";
+    }
+
+    /**
+     * Handle custom event.
+     */
+    #[SocketOn('example.event')]
+    public function handleExampleEvent(int $clientId, array $data): void
+    {
+        // Handle your custom event here
+        $this->emit($clientId, 'example.response', [
+            'message' => 'Event received',
+            'data' => $data
+        ]);
+    }
+}
