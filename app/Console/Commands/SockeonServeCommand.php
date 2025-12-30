@@ -35,17 +35,20 @@ class SockeonServeCommand extends Command
         $config = new ServerConfig([
             'host' => $host,
             'port' => $port,
-            'debug' => $debug
+            'debug' => $debug,
         ]);
 
         // Create server
         $server = new Server($config);
 
+        // Register handshake middleware for authentication
+        $server->addHandshakeMiddleware(\App\WebSocket\Middleware\AuthHandshakeMiddleware::class);
+
         // Register controllers
         $controllers = config('sockeon.controllers', []);
         foreach ($controllers as $controllerClass) {
             if (class_exists($controllerClass)) {
-                $server->registerController(new $controllerClass());
+                $server->registerController(new $controllerClass);
                 $this->info("Registered controller: {$controllerClass}");
             } else {
                 $this->warn("Controller not found: {$controllerClass}");
@@ -53,14 +56,15 @@ class SockeonServeCommand extends Command
         }
 
         $this->info("Starting WebSocket server on ws://{$host}:{$port}");
-        $this->info("Press Ctrl+C to stop");
+        $this->info('Press Ctrl+C to stop');
         $this->newLine();
 
         // Start server
         try {
             $server->run();
         } catch (\Exception $e) {
-            $this->error("Server error: " . $e->getMessage());
+            $this->error('Server error: '.$e->getMessage());
+
             return Command::FAILURE;
         }
 
